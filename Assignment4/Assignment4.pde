@@ -6,12 +6,16 @@ PImage yellowAlien;
 PImage playerSpaceship;
 
 Spaceship player;
-OrangeAlien orangeOne;
+
 
 PVector playerPosition;
 
+ArrayList<OrangeAlien> orangeList = new ArrayList<OrangeAlien>();
+
 PVector orangeAlienPosition;
 PVector orangeAlienVelocity;
+
+PVector orangeAlienPosition2;
 
 float alienAcceleration;
 
@@ -32,28 +36,70 @@ void setup() {
   orangeAlien.resize(40, 40);
 
   playerPosition = new PVector(185, 345);
-  
-  orangeAlienPosition = new PVector(50, 50);
-  orangeAlienVelocity = new PVector(3, 0);
-  
-  alienAcceleration = -1.025;
+
+  orangeAlienPosition = new PVector(30, 50);
+  orangeAlienVelocity = new PVector(1, 0);
+
+  alienAcceleration = -1.0025;
+
+  for (int i = 0; i < 250; i += 50) {
+
+    orangeAlienPosition.x += i;
+
+    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), orangeAlienVelocity, alienAcceleration);
+
+
+    orangeList.add(tempAlien);
+  }
+
+  println(orangeAlienPosition);
 
   player = new Spaceship(playerSpaceship, playerPosition);
-  orangeOne = new OrangeAlien(orangeAlien, orangeAlienPosition, orangeAlienVelocity, alienAcceleration);
 }
 
 void draw() {
 
   background(255);
+
+
   player.move();
-  
-  player.position.x = constrain(player.position.x, 0, 360);
-  
+
+  player.position.x = constrain(player.position.x, 0, width - 40);
+
   player.display();
-  
-  orangeOne.update();
-  orangeOne.display();
+
+  for (int i = 0; i < orangeList.size(); i++) {
+    boolean anyEdges = false;
+    OrangeAlien alienCheck = orangeList.get(i);
+    
+    for(int k = 0; k < orangeList.size(); k++) {
+      anyEdges = orangeList.get(k).edgeDetection();
+      if(anyEdges) {
+        break;
+      }
+    }
+    
+
+
+    if (anyEdges) {
+      for (int j = 0; j < orangeList.size(); j++) {
+        OrangeAlien alienCheck2 = orangeList.get(j);
+
+        alienCheck2.reverseDirection();
+        alienCheck2.update();
+        alienCheck2.display();
+      }
+    } else {
+
+      println(alienCheck.position.x);
+
+      alienCheck.update();
+      alienCheck.display();
+    }
+  }
 }
+
+
 
 void keyPressed() {
 
@@ -67,7 +113,7 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  
+
   if (key == 'a') {
     player.moveLeft = false;
   }
@@ -75,5 +121,4 @@ void keyReleased() {
   if (key == 'd') {
     player.moveRight = false;
   }
-  
 }

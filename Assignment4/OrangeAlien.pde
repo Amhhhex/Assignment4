@@ -24,15 +24,28 @@ class OrangeAlien {
 
     position.add(velocity);
 
-
-    if (position.x >= 360) {
+    
+  }
+  
+  void reverseDirection() {
+    
       velocity.mult(acceleration);
       position.y += 3;
+    
+  }
+  
+  boolean edgeDetection() {
+    
+    if (position.x >= width - 40) {
+      return true;
     }
     
-    if (position.x < 0) {
-      velocity.mult(acceleration);
-      position.y += 3;
+    if (position.x <= 0) {
+      return true;
+    }
+    
+    else {
+      return false;
     }
   }
 }
