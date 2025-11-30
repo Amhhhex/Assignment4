@@ -86,6 +86,7 @@ void draw() {
       for (int n = orangeList.size() - 1; n >= 0; n--) {
         if (player.bullets.get(l).position.x > orangeList.get(n).position.x && player.bullets.get(l).position.x < orangeList.get(n).position.x + 40 && player.bullets.get(l).position.y > orangeList.get(n).position.y && player.bullets.get(l).position.y < orangeList.get(n).position.y + 40) {
           orangeList.remove(n);
+          player.bullets.remove(l);
         }
       }
     }
@@ -100,6 +101,11 @@ void draw() {
       anyEdges = orangeList.get(i).edgeDetection();
 
       if (anyEdges) {
+        
+        //5th alien is one pixel closer bc the other aliens get 1 frame of movement more before the edge detection occurs
+        // e.g when the 5th alien is touch the edge of the screen on the right side the for loop counts forwards moving each
+        // alien up by their velocity amount before the 5th notifys them of touching the edge
+        //
 
         for (int k = 0; k < orangeList.size(); k++) {
 
