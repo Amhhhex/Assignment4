@@ -18,7 +18,7 @@ class Bullet {
   
   void display() {
    
-    rectMode(CENTER);
+    //rectMode(CENTER);
     
     rect(position.x, position.y, 5, 20);
     
