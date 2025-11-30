@@ -106,8 +106,12 @@ void draw() {
           orangeList.get(k).reverseDirection();
 
           if (orangeList.get(k).velocity.x < 0) {
+            if(k == 4) {
+              orangeList.get(k).position.x +=1;
+            }
             orangeList.get(k).position.x -= 1;
-          } else {
+          }
+          if (orangeList.get(k).velocity.x > 0){
             orangeList.get(k).position.x += 1;
           }
         }
@@ -133,7 +137,7 @@ void draw() {
           alienCheck.alienBullets.get(m).display();
 
           if (alienCheck.alienBullets.get(m).position.x > player.position.x && alienCheck.alienBullets.get(m).position.x < player.position.x + 40 && alienCheck.alienBullets.get(m).position.y > player.position.y && alienCheck.alienBullets.get(m).position.y < player.position.y + 40) {
-            //gameOver = true;
+            gameOver = true;
           }
         }
       }
