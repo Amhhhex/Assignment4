@@ -5,7 +5,7 @@ class OrangeAlien {
   PVector velocity;
   float acceleration;
 
-  int fireRate = int(random(30, 360));
+  int fireRate = int(random(60, 90));
 
   ArrayList<Bullet> alienBullets = new ArrayList<Bullet>();
 
@@ -15,7 +15,6 @@ class OrangeAlien {
     position = tempPosition;
     velocity = tempVelocity;
     acceleration = tempAcceleration;
-    //fireRate = random(120, 360);
   }
 
 

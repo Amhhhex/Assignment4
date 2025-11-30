@@ -45,20 +45,34 @@ void setup() {
 
   alienAcceleration = -1.0025;
 
-  for (int i = 0; i < 250; i += 50) {
+  for (int i = 0; i < 250; i += 70) {
 
 
-    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), -1.0025);
+    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), alienAcceleration);
+
+
+    orangeList.add(tempAlien);
+  }
+  
+  for (int i = 30; i < 250; i += 70) {
+
+
+    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
 
 
     orangeList.add(tempAlien);
   }
 
 
+
   player = new Spaceship(playerSpaceship, playerPosition);
+
+ 
 }
 
 void draw() {
+  
+  boolean anyEdges = false;
 
   if (!gameOver) {
 
@@ -79,7 +93,9 @@ void draw() {
 
     player.display();
 
-    for (int l = 0; l < player.bullets.size(); l++) {
+    println(player.bullets.size());
+
+    for (int l = player.bullets.size() - 1; l >= 0; l--) {
       player.bullets.get(l).update();
       player.bullets.get(l).display();
 
@@ -87,21 +103,28 @@ void draw() {
         if (player.bullets.get(l).position.x > orangeList.get(n).position.x && player.bullets.get(l).position.x < orangeList.get(n).position.x + 40 && player.bullets.get(l).position.y > orangeList.get(n).position.y && player.bullets.get(l).position.y < orangeList.get(n).position.y + 40) {
           orangeList.remove(n);
           player.bullets.remove(l);
+          break;
         }
       }
+    }
+    
+    
+    
+    for (int h = 0; h < orangeList.size(); h++) {
+      anyEdges = orangeList.get(h).edgeDetection();
     }
 
 
 
     for (int i = 0; i < orangeList.size(); i++) {
-      boolean anyEdges = false;
+      
       OrangeAlien alienCheck = orangeList.get(i);
 
 
       anyEdges = orangeList.get(i).edgeDetection();
 
       if (anyEdges) {
-        
+
         //5th alien is one pixel closer bc the other aliens get 1 frame of movement more before the edge detection occurs
         // e.g when the 5th alien is touch the edge of the screen on the right side the for loop counts forwards moving each
         // alien up by their velocity amount before the 5th notifys them of touching the edge
@@ -112,12 +135,9 @@ void draw() {
           orangeList.get(k).reverseDirection();
 
           if (orangeList.get(k).velocity.x < 0) {
-            if(k == 4) {
-              orangeList.get(k).position.x +=1;
-            }
             orangeList.get(k).position.x -= 1;
           }
-          if (orangeList.get(k).velocity.x > 0){
+          if (orangeList.get(k).velocity.x > 0) {
             orangeList.get(k).position.x += 1;
           }
         }
@@ -156,6 +176,7 @@ void draw() {
     textSize(25);
     text("Press Space to continue", 75, 300);
   }
+  anyEdges = false;
 }
 
 
@@ -174,14 +195,23 @@ void keyPressed() {
 
     orangeList.clear();
 
-    for (int i = 0; i < 250; i += 50) {
+    for (int i = 0; i < 250; i += 70) {
 
 
-      OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), orangeAlienVelocity, alienAcceleration);
+    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), -1.0025);
 
 
-      orangeList.add(tempAlien);
-    }
+    orangeList.add(tempAlien);
+  }
+  
+  for (int i = 30; i < 250; i += 70) {
+
+
+    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
+
+
+    orangeList.add(tempAlien);
+  }
 
     player = new Spaceship(playerSpaceship, playerPosition);
 
