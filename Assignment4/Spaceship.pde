@@ -4,6 +4,8 @@ class Spaceship {
 
   boolean moveRight;
   boolean moveLeft;
+  
+  ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 
   Spaceship(PImage tempImage, PVector tempPosition) {

@@ -4,6 +4,10 @@ class OrangeAlien {
   PVector position;
   PVector velocity;
   float acceleration;
+  
+  int fireRate = int(random(120, 360));
+  
+  ArrayList<Bullet> alienBullets = new ArrayList<Bullet>();
 
   OrangeAlien(PImage tempImage, PVector tempPosition, PVector tempVelocity, float tempAcceleration) {
 
@@ -11,6 +15,7 @@ class OrangeAlien {
     position = tempPosition;
     velocity = tempVelocity;
     acceleration = tempAcceleration;
+    //fireRate = random(120, 360);
   }
 
 
@@ -31,6 +36,23 @@ class OrangeAlien {
     
       velocity.mult(acceleration);
       position.y += 3;
+    
+  }
+  
+  void shoot() {
+    
+    println(frameCount % fireRate);
+    
+    if(frameCount % fireRate == 0) {
+      
+         println("PEW!!");
+
+      
+      Bullet tempAlienBullet = new Bullet(new PVector(position.x + 20, position.y + 40), new PVector(0, -3), 1.025);
+      
+      alienBullets.add(tempAlienBullet);
+      
+    }
     
   }
   

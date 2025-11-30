@@ -37,14 +37,12 @@ void setup() {
 
   playerPosition = new PVector(185, 345);
 
-  orangeAlienPosition = new PVector(30, 50);
   orangeAlienVelocity = new PVector(1, 0);
 
   alienAcceleration = -1.0025;
 
   for (int i = 0; i < 250; i += 50) {
 
-    orangeAlienPosition.x += i;
 
     OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), orangeAlienVelocity, alienAcceleration);
 
@@ -52,14 +50,13 @@ void setup() {
     orangeList.add(tempAlien);
   }
 
-  println(orangeAlienPosition);
 
   player = new Spaceship(playerSpaceship, playerPosition);
 }
 
 void draw() {
 
-  background(255);
+  background(0);
 
 
   player.move();
@@ -68,17 +65,22 @@ void draw() {
 
   player.display();
 
+  for (int l = 0; l < player.bullets.size(); l++) {
+    player.bullets.get(l).update();
+    player.bullets.get(l).display();
+  }
+
   for (int i = 0; i < orangeList.size(); i++) {
     boolean anyEdges = false;
     OrangeAlien alienCheck = orangeList.get(i);
-    
-    for(int k = 0; k < orangeList.size(); k++) {
+
+    for (int k = 0; k < orangeList.size(); k++) {
       anyEdges = orangeList.get(k).edgeDetection();
-      if(anyEdges) {
+      if (anyEdges) {
         break;
       }
     }
-    
+
 
 
     if (anyEdges) {
@@ -88,13 +90,25 @@ void draw() {
         alienCheck2.reverseDirection();
         alienCheck2.update();
         alienCheck2.display();
+        alienCheck2.shoot();
+
+        for (int m = 0; m < alienCheck2.alienBullets.size(); m++) {
+          alienCheck2.alienBullets.get(m).update();
+          alienCheck2.alienBullets.get(m).display();
+        }
       }
     } else {
 
-      println(alienCheck.position.x);
+      //println(alienCheck.position.x);
 
       alienCheck.update();
       alienCheck.display();
+      alienCheck.shoot();
+
+        for (int m = 0; m < alienCheck.alienBullets.size(); m++) {
+          alienCheck.alienBullets.get(m).update();
+          alienCheck.alienBullets.get(m).display();
+        }
     }
   }
 }
@@ -121,4 +135,12 @@ void keyReleased() {
   if (key == 'd') {
     player.moveRight = false;
   }
+}
+
+
+void mousePressed() {
+
+  Bullet tempBullet = new Bullet(new PVector(player.position.x + 20, player.position.y), new PVector(0, 3), 1.025);
+
+  player.bullets.add(tempBullet);
 }
