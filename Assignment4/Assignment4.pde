@@ -10,7 +10,7 @@ Spaceship player;
 
 PVector playerPosition;
 
-ArrayList<OrangeAlien> orangeList = new ArrayList<OrangeAlien>();
+ArrayList<Alien> alienList = new ArrayList<Alien>();
 
 PVector orangeAlienPosition;
 PVector orangeAlienVelocity;
@@ -43,6 +43,8 @@ void setup() {
 
   playerSpaceship.resize(40, 40);
   orangeAlien.resize(40, 40);
+  pinkAlien.resize(40, 40);
+  greenAlien.resize(40, 40);
 
   playerPosition = new PVector(185, 345);
 
@@ -50,23 +52,7 @@ void setup() {
 
   alienAcceleration = -1.0025;
 
-  for (int i = 0; i < 250; i += 70) {
-
-
-    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), alienAcceleration);
-
-
-    orangeList.add(tempAlien);
-  }
-
-  for (int i = 30; i < 250; i += 70) {
-
-
-    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
-
-
-    orangeList.add(tempAlien);
-  }
+  spawnAliens();
 
 
 
@@ -83,7 +69,7 @@ void draw() {
   if (!gameOver) {
 
 
-    if (orangeList.isEmpty()) {
+    if (alienList.isEmpty()) {
 
       gameOver = true;
     }
@@ -120,7 +106,7 @@ void draw() {
 
 
 
-    //fill(255);
+    fill(255);
 
 
 
@@ -136,9 +122,9 @@ void draw() {
       player.bullets.get(l).update();
       player.bullets.get(l).display();
 
-      for (int n = orangeList.size() - 1; n >= 0; n--) {
-        if (player.bullets.get(l).position.x > orangeList.get(n).position.x && player.bullets.get(l).position.x < orangeList.get(n).position.x + 40 && player.bullets.get(l).position.y > orangeList.get(n).position.y && player.bullets.get(l).position.y < orangeList.get(n).position.y + 40) {
-          orangeList.remove(n);
+      for (int n = alienList.size() - 1; n >= 0; n--) {
+        if (player.bullets.get(l).position.x > alienList.get(n).position.x && player.bullets.get(l).position.x < alienList.get(n).position.x + 40 && player.bullets.get(l).position.y > alienList.get(n).position.y && player.bullets.get(l).position.y < alienList.get(n).position.y + 40) {
+          alienList.remove(n);
           player.bullets.remove(l);
           break;
         }
@@ -147,18 +133,18 @@ void draw() {
 
 
 
-    for (int h = 0; h < orangeList.size(); h++) {
-      anyEdges = orangeList.get(h).edgeDetection();
+    for (int h = 0; h < alienList.size(); h++) {
+      anyEdges = alienList.get(h).edgeDetection();
     }
 
 
 
-    for (int i = 0; i < orangeList.size(); i++) {
+    for (int i = 0; i < alienList.size(); i++) {
 
-      OrangeAlien alienCheck = orangeList.get(i);
+      Alien alienCheck = alienList.get(i);
 
 
-      anyEdges = orangeList.get(i).edgeDetection();
+      anyEdges = alienList.get(i).edgeDetection();
 
       if (anyEdges) {
 
@@ -167,15 +153,15 @@ void draw() {
         // alien up by their velocity amount before the 5th notifys them of touching the edge
         //
 
-        for (int k = 0; k < orangeList.size(); k++) {
+        for (int k = 0; k < alienList.size(); k++) {
 
-          orangeList.get(k).reverseDirection();
+          alienList.get(k).reverseDirection();
 
-          if (orangeList.get(k).velocity.x < 0) {
-            orangeList.get(k).position.x -= 1;
+          if (alienList.get(k).velocity.x < 0) {
+            alienList.get(k).position.x -= 1;
           }
-          if (orangeList.get(k).velocity.x > 0) {
-            orangeList.get(k).position.x += 1;
+          if (alienList.get(k).velocity.x > 0) {
+            alienList.get(k).position.x += 1;
           }
         }
 
@@ -230,29 +216,11 @@ void keyPressed() {
 
   if (key == ' ' && gameOver == true) {
 
-    orangeList.clear();
+    alienList.clear();
 
-    for (int i = 0; i < 250; i += 70) {
-
-
-      OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), -1.0025);
-
-
-      orangeList.add(tempAlien);
-    }
-
-    for (int i = 30; i < 250; i += 70) {
-
-
-      OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
-
-
-      orangeList.add(tempAlien);
-    }
+    spawnAliens();
 
     player = new Spaceship(playerSpaceship, playerPosition);
-
-
 
     gameOver = false;
   }
@@ -275,4 +243,36 @@ void mousePressed() {
   Bullet tempBullet = new Bullet(new PVector(player.position.x + 20, player.position.y), new PVector(0, 3), 1.025);
 
   player.bullets.add(tempBullet);
+}
+
+void spawnAliens() {
+
+  for (int i = 0; i < 250; i += 70) {
+
+
+    Alien tempOrangeAlien = new Alien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), alienAcceleration, int(random(60, 90)));
+
+
+    alienList.add(tempOrangeAlien);
+  }
+
+  for (int i = 30; i < 250; i += 70) {
+
+
+    Alien tempPinkAlien = new Alien(pinkAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration, int(random(90, 120)));
+
+
+    alienList.add(tempPinkAlien);
+  }
+  
+  for (int i = 0; i < 250; i += 70) {
+
+
+    Alien tempGreenAlien = new Alien(greenAlien, new PVector(30 + i, 100), new PVector(1, 0), alienAcceleration, int(random(30, 90)));
+
+
+    alienList.add(tempGreenAlien);
+  }
+
+
 }
