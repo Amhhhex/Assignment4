@@ -25,6 +25,11 @@ boolean moveLeft;
 boolean gameOver;
 
 
+int seed = int(random(0, 120));
+
+ArrayList<Star> starList = new ArrayList<Star>();
+
+
 void setup() {
   size(400, 400);
 
@@ -53,7 +58,7 @@ void setup() {
 
     orangeList.add(tempAlien);
   }
-  
+
   for (int i = 30; i < 250; i += 70) {
 
 
@@ -66,12 +71,13 @@ void setup() {
 
 
   player = new Spaceship(playerSpaceship, playerPosition);
-
- 
+  
+    
+  
 }
 
 void draw() {
-  
+
   boolean anyEdges = false;
 
   if (!gameOver) {
@@ -81,9 +87,40 @@ void draw() {
 
       gameOver = true;
     }
-
     fill(255);
     background(0);
+    
+    for (int j = 0; j < starList.size(); j++) {
+
+
+
+      starList.get(j).update();
+      starList.get(j).display();
+    }
+
+    noiseSeed(seed);
+
+    for (int i = 0; i <= width; i++) {
+
+      float y = noise(i);
+
+      if (y > 0.88) {
+
+        if (i > 0 && i < width - 1) {
+          Star tempStar = new Star(new PVector(i, 0), new PVector(0, -3), 1.0025);
+
+          starList.add(tempStar);
+        }
+      }
+
+      seed++;
+    }
+
+    
+
+
+
+    //fill(255);
 
 
 
@@ -107,9 +144,9 @@ void draw() {
         }
       }
     }
-    
-    
-    
+
+
+
     for (int h = 0; h < orangeList.size(); h++) {
       anyEdges = orangeList.get(h).edgeDetection();
     }
@@ -117,7 +154,7 @@ void draw() {
 
 
     for (int i = 0; i < orangeList.size(); i++) {
-      
+
       OrangeAlien alienCheck = orangeList.get(i);
 
 
@@ -198,20 +235,20 @@ void keyPressed() {
     for (int i = 0; i < 250; i += 70) {
 
 
-    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), -1.0025);
+      OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), -1.0025);
 
 
-    orangeList.add(tempAlien);
-  }
-  
-  for (int i = 30; i < 250; i += 70) {
+      orangeList.add(tempAlien);
+    }
+
+    for (int i = 30; i < 250; i += 70) {
 
 
-    OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
+      OrangeAlien tempAlien = new OrangeAlien(orangeAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration);
 
 
-    orangeList.add(tempAlien);
-  }
+      orangeList.add(tempAlien);
+    }
 
     player = new Spaceship(playerSpaceship, playerPosition);
 
