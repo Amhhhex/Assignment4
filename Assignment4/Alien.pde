@@ -52,6 +52,8 @@ class Alien {
       alienBullets.add(tempAlienBullet);
     }
   }
+  
+  
 
   boolean edgeDetection() {
 

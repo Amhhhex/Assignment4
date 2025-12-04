@@ -1,4 +1,6 @@
 
+import gifAnimation.*;
+
 PImage orangeAlien;
 PImage pinkAlien;
 PImage greenAlien;
@@ -6,6 +8,9 @@ PImage yellowAlien;
 PImage playerSpaceship;
 
 Spaceship player;
+
+PImage[] explosionGif;
+int explosionFrame;
 
 
 PVector playerPosition;
@@ -57,9 +62,12 @@ void setup() {
 
 
   player = new Spaceship(playerSpaceship, playerPosition);
-  
-    
-  
+
+  explosionGif = new PImage[13];
+
+  for (int g = 0; g < explosionGif.length - 1; g++) {
+    explosionGif[g] = loadImage("frame_" + g + "_delay-0.08s.gif");
+  }
 }
 
 void draw() {
@@ -75,7 +83,7 @@ void draw() {
     }
     fill(255);
     background(0);
-    
+
     for (int j = 0; j < starList.size(); j++) {
 
 
@@ -102,7 +110,7 @@ void draw() {
       seed++;
     }
 
-    
+
 
 
 
@@ -124,6 +132,10 @@ void draw() {
 
       for (int n = alienList.size() - 1; n >= 0; n--) {
         if (player.bullets.get(l).position.x > alienList.get(n).position.x && player.bullets.get(l).position.x < alienList.get(n).position.x + 40 && player.bullets.get(l).position.y > alienList.get(n).position.y && player.bullets.get(l).position.y < alienList.get(n).position.y + 40) {
+
+          
+          
+          explosion(alienList.get(n).position.x, alienList.get(n).position.y);
           alienList.remove(n);
           player.bullets.remove(l);
           break;
@@ -264,7 +276,7 @@ void spawnAliens() {
 
     alienList.add(tempPinkAlien);
   }
-  
+
   for (int i = 0; i < 250; i += 70) {
 
 
@@ -273,6 +285,12 @@ void spawnAliens() {
 
     alienList.add(tempGreenAlien);
   }
+}
 
+void explosion(float xPosition, float yPosition) {
 
+  
+  for (int g = 0; g < explosionGif.length - 1; g++) {
+    image(explosionGif[g], xPosition, yPosition, 60, 60);
+  }
 }
