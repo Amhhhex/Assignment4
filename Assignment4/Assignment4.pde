@@ -53,6 +53,7 @@ void setup() {
   orangeAlien.resize(40, 40);
   pinkAlien.resize(40, 40);
   greenAlien.resize(40, 40);
+  yellowAlien.resize(40, 40);
 
   playerPosition = new PVector(width/2, 500);
 
@@ -156,9 +157,7 @@ void draw() {
 
 
 
-    for (int h = 0; h < alienList.size(); h++) {
-      anyEdges = alienList.get(h).edgeDetection();
-    }
+    
 
 
 
@@ -296,7 +295,7 @@ void spawnAliens() {
   for (int i = 30; i < 550; i += 70) {
 
 
-    Alien tempPinkAlien = new Alien(pinkAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration, int(random(90, 180)));
+    Alien tempPinkAlien = new Alien(pinkAlien, new PVector(30 + i, 50), new PVector(1, 0), alienAcceleration, int(random(120, 180)));
 
 
     alienList.add(tempPinkAlien);
@@ -305,9 +304,18 @@ void spawnAliens() {
   for (int i = 0; i < 550; i += 70) {
 
 
-    Alien tempGreenAlien = new Alien(greenAlien, new PVector(30 + i, 100), new PVector(1, 0), alienAcceleration, int(random(90, 360)));
+    Alien tempGreenAlien = new Alien(greenAlien, new PVector(30 + i, 100), new PVector(1, 0), alienAcceleration, int(random(240, 360)));
 
 
     alienList.add(tempGreenAlien);
+  }
+  
+  for (int i = 30; i < 550; i += 70) {
+
+
+    Alien tempYellowAlien = new Alien(yellowAlien, new PVector(30 + i, 150), new PVector(1, 0), alienAcceleration, int(random(180, 240)));
+
+
+    alienList.add(tempYellowAlien);
   }
 }
