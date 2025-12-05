@@ -166,6 +166,8 @@ void draw() {
 
 
 
+    //makes the bullets white to increase visibility
+    fill(255);
 
 
     //updates the players position
@@ -332,6 +334,7 @@ void draw() {
 
 void keyPressed() {
 
+  //if a or d is pressed, move the player left or right 
   if (key == 'a') {
     player.moveLeft = true;
   }
@@ -340,22 +343,29 @@ void keyPressed() {
     player.moveRight = true;
   }
 
+  //resets the game state if the gameOver state is true and the space bar is pressed
   if (key == ' ' && gameOver == true) {
 
+    //clear the alienList
     alienList.clear();
 
+    //clear the explosion list
     explosionList.clear();
 
+    //spawn all aliens
     spawnAliens();
 
+    //center the player character
     player = new Spaceship(playerSpaceship, playerPosition);
 
+    //reset the game states
     gameOver = false;
     
     gameWon = false;
   }
 }
 
+//once the keys are released, stop moving the player character in that direction
 void keyReleased() {
 
   if (key == 'a') {
@@ -367,7 +377,7 @@ void keyReleased() {
   }
 }
 
-
+//whenever the mouse is pressed, create a new bullet, add it to the bullet arrayList and play a sound
 void mousePressed() {
 
   Bullet tempBullet = new Bullet(new PVector(player.position.x + 20, player.position.y), new PVector(0, 3), 1.025);
@@ -377,6 +387,7 @@ void mousePressed() {
   playerShot.play();
 }
 
+//A series of for loops that spawn the aliens, each for loop gives the aliens a different y value to use
 void spawnAliens() {
 
   for (int i = 0; i < 550; i += 70) {
