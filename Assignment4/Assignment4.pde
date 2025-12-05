@@ -1,3 +1,17 @@
+/*
+  Orange Alien image retrieved from: https://www.pngegg.com/en/png-ffmzv
+  Pink Alien image retrieved from: https://www.pngegg.com/en/png-zxqqa/download
+  Green Alien image retrived from: https://www.pngegg.com/en/png-ffmzl
+  Yellow Alien image retrived from: https://www.pngegg.com/en/png-ffmzu
+
+  Player Spaceship image retrived from: https://www.pngegg.com/en/png-bjneh/download
+  
+  Alien Bullet sound retrieved from: https://samplefocus.com/samples/retro-gun-laser
+  All other sounds retrived from the following: https://classicgaming.cc/classics/space-invaders/sounds#google_vignette
+
+*/
+
+
 
 //Importing the Processing sound library
 import processing.sound.*;
