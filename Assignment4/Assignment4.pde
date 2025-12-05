@@ -1,91 +1,108 @@
 
-import gifAnimation.*;
+//Importing the Processing sound library
 import processing.sound.*;
 
+//Declaring the image variables for all alien types and the space ship
 PImage orangeAlien;
 PImage pinkAlien;
 PImage greenAlien;
 PImage yellowAlien;
 PImage playerSpaceship;
 
+//Declaring the Win screen image
 PImage youWinScreen;
 
+//Declaring the player
 Spaceship player;
 
+//Creating the PImage array for the explosion, and the index of the explosion
 PImage[] explosionGif;
 int explosionFrame;
 
+
+//Declaring the explosion arrayList, which will store all explosions
 ArrayList<Explosion> explosionList = new ArrayList<Explosion>();
 
-
+//Declaring the playerPosition variable, used to start the player in a specific location on screen
 PVector playerPosition;
 
+//The Alien arrayList, stores all aliens within it
 ArrayList<Alien> alienList = new ArrayList<Alien>();
 
-PVector orangeAlienPosition;
-PVector orangeAlienVelocity;
-
-PVector orangeAlienPosition2;
-
+//Declaring the alien acceleration
 float alienAcceleration;
 
+//Declaring the moving variables
 boolean moveRight;
 boolean moveLeft;
 
+//Declaring the game state booleans
 boolean gameOver;
 boolean gameWon;
 
+//Declaring the sound file variables
 SoundFile playerShot;
 SoundFile playerExplosion;
 SoundFile alienExplode;
 SoundFile alienLaser;
 
-
+//Declaring and assigning the seed variable, used to create the stars
 int seed = int(random(0, 120));
 
+//Declaring the star arraList, which stores all created stars
 ArrayList<Star> starList = new ArrayList<Star>();
 
 
 void setup() {
+  //Establishing the size of the screen
   size(600, 600);
-
+  
+  //Settings the gameState
   gameOver = false;
 
+  //Loading the alien images
   orangeAlien = loadImage("OrangeSpaceInvader.png");
   pinkAlien = loadImage("PinkSpaceInvader.png");
   greenAlien = loadImage("GreenSpaceInvader.png");
   yellowAlien = loadImage("YellowSpaceInvader.png");
   playerSpaceship = loadImage("PlayerSpaceship.png");
   
+  //loading the winning screen image
   youWinScreen = loadImage("YouWinScreen.png");
   
   
-  
+  //loading the sound files
   playerShot = new SoundFile(this, "shoot.wav");
   playerExplosion = new SoundFile(this, "explosion.wav");
   alienExplode = new SoundFile(this, "invaderkilled.wav");
   alienLaser = new SoundFile(this, "alien-laser.wav");
 
+  //resizing all images to the same size
   playerSpaceship.resize(40, 40);
   orangeAlien.resize(40, 40);
   pinkAlien.resize(40, 40);
   greenAlien.resize(40, 40);
   yellowAlien.resize(40, 40);
 
+  //assigning the starting player position
   playerPosition = new PVector(width/2, 500);
 
-  orangeAlienVelocity = new PVector(1, 0);
 
+  //assigning the alienAcceleration 
   alienAcceleration = -1.0025;
 
+  //calling the spawn aliens function
   spawnAliens();
 
 
 
+  //assigning the player variable with the starting player position and image
   player = new Spaceship(playerSpaceship, playerPosition);
 
+  //assigning the explosion array size
   explosionGif = new PImage[13];
 
+  //populating the explosion array with its image
   for (int g = 0; g < explosionGif.length; g++) {
     explosionGif[g] = loadImage("frame_" + g + "_delay-0.08s.gif");
   }
@@ -93,25 +110,29 @@ void setup() {
 
 void draw() {
 
+  //setting the anyEdges variable to false, is used to determine if an alien is touching the edge
   boolean anyEdges = false;
 
+  //if the game isn't over, play the game
   if (!gameOver) {
 
 
+    //if all aliens have been eliminated, switch the game state and switch the game to won
     if (alienList.isEmpty()) {
 
       gameOver = true;
       gameWon = true;
     }
+    
+    //creating the background
     fill(255);
     background(0);
 
+    //Moves and displays every star in the arrayList, if the the star is off the screen, it gets deleted
     for (int j = starList.size() - 1; j >= 0; j--) {
-
 
       if(starList.get(j).position.y > height) {
       
-        println("removing");
          starList.remove(j);
          continue;
       
@@ -121,12 +142,16 @@ void draw() {
       starList.get(j).display();
     }
 
+    //set the seed for the noise
     noiseSeed(seed);
 
+    //Loops for every pixel on the width of the screen
     for (int i = 0; i <= width; i++) {
 
+      //saves the noise value into a variable
       float y = noise(i);
 
+      //if the noise variable is greater than the specified amoun, create a new star at that location and store it in the star arrayList
       if (y > 0.88) {
 
         if (i > 0 && i < width - 1) {
@@ -135,7 +160,7 @@ void draw() {
           starList.add(tempStar);
         }
       }
-
+      //increment the seed by 1
       seed++;
     }
 
@@ -143,22 +168,23 @@ void draw() {
 
 
 
-    fill(255);
-
-
-
+    //updates the players position
     player.move();
-
+    
+    //constrains the player within the screen
     player.position.x = constrain(player.position.x, 0, width - 40);
 
+    //displays the player
     player.display();
 
 
+    //A nested for loop for the bullets
+    //First the bullets positions are updated and then displayed, if the bullet is off screen it is removed from the arrayList
+    //The second for loop is for collision detection
     for (int l = player.bullets.size() - 1; l >= 0; l--) {
       
       if(player.bullets.get(l).position.y <= 0) {
         
-        println("removing player bullets");
         player.bullets.remove(l);
         continue;
       
@@ -167,7 +193,10 @@ void draw() {
       player.bullets.get(l).update();
       player.bullets.get(l).display();
 
+      //Collision detection for the bullets and the aliens
       for (int n = alienList.size() - 1; n >= 0; n--) {
+        //if a bullet and the aliens hitbox overlap then an explosion is added to the explosion arrayList
+        //then the alien explode sound is played, with the alien being removed from the list and the bullet being removed from the bullet arrayList
         if (player.bullets.get(l).position.x > alienList.get(n).position.x && player.bullets.get(l).position.x < alienList.get(n).position.x + 40 && player.bullets.get(l).position.y > alienList.get(n).position.y && player.bullets.get(l).position.y < alienList.get(n).position.y + 40) {
 
 
@@ -182,6 +211,7 @@ void draw() {
     }
 
 
+    //for every explosion in the explosion arrayList display the explosion
     for (int a = 0; a < explosionList.size(); a++) {
 
       explosionList.get(a).display();
@@ -193,20 +223,22 @@ void draw() {
 
 
 
+    //This is a series of for loops going through the alien arrayList
     for (int i = 0; i < alienList.size(); i++) {
 
       Alien alienCheck = alienList.get(i);
 
 
+      //first, it checks to see if any aliens are touching the edge of the screen
       anyEdges = alienList.get(i).edgeDetection();
 
+      //if any alien is touching the edge of the screen
       if (anyEdges) {
 
-        //5th alien is one pixel closer bc the other aliens get 1 frame of movement more before the edge detection occurs
-        // e.g when the 5th alien is touch the edge of the screen on the right side the for loop counts forwards moving each
-        // alien up by their velocity amount before the 5th notifys them of touching the edge
-        //
+        
 
+        //loops through the list of aliens again, then it reverses the direction of every alien
+        //Each alien is also bumped slightly to ensure they stay within the screen space
         for (int k = 0; k < alienList.size(); k++) {
 
           alienList.get(k).reverseDirection();
@@ -219,15 +251,18 @@ void draw() {
           }
         }
 
+        //then the aliens position is updated, then displayed, then they shoot (if possible, see alien class for more)
         alienCheck.update();
         alienCheck.display();
         alienCheck.shoot();
 
+
+        //The aliens bullets have their position updated and then displayed
+        //If the bullet is offscreen, the bullet is removed
         for (int m = 0; m < alienCheck.alienBullets.size(); m++) {
           
           if(alienCheck.alienBullets.get(m).position.y >= height) {
             
-            println("Removing alien bullets");
             alienCheck.alienBullets.remove(m);
             continue;
           
@@ -236,19 +271,21 @@ void draw() {
           alienCheck.alienBullets.get(m).update();
           alienCheck.alienBullets.get(m).display();
         }
+      //If the alien isn't touching the edge of the screen
       } else {
 
-        //println(alienCheck.position.x);
 
+        //the aliens position is then updated, displayed, then they shoot
         alienCheck.update();
         alienCheck.display();
         alienCheck.shoot();
 
+        //Then every alien bullet is updated and then displayed
+        //If the bullet is off screen, the bullet is removed
         for (int m = 0; m < alienCheck.alienBullets.size(); m++) {
           
           if(alienCheck.alienBullets.get(m).position.y >= height) {
             
-            println("removing alien bullets");
             
             alienCheck.alienBullets.remove(m);
             continue;
@@ -258,6 +295,9 @@ void draw() {
           alienCheck.alienBullets.get(m).update();
           alienCheck.alienBullets.get(m).display();
 
+          //A collision check for the alien bullet
+          //If any part of the alien bullet intersects with the player hit box the game state is swapped
+          //also an explosion sound is played for the player
           if (alienCheck.alienBullets.get(m).position.x > player.position.x && alienCheck.alienBullets.get(m).position.x < player.position.x + 40 && alienCheck.alienBullets.get(m).position.y > player.position.y && alienCheck.alienBullets.get(m).position.y < player.position.y + 40) {
             
             playerExplosion.play();
@@ -266,12 +306,15 @@ void draw() {
         }
       }
     }
+  //executes once the game state has flipped
   } else {
+    
+    //if the player eliminated all aliens, display the youWinScreen image
     if (gameWon) {
       
       image(youWinScreen, 0, 0);
 
-      
+    //if the player hasn't won, then display the game over screen
     } else {
       background(255);
       fill(0);
@@ -281,6 +324,7 @@ void draw() {
       text("Press Space to continue", 180, 500);
     }
   }
+  //reset anyEdges to false
   anyEdges = false;
 }
 
