@@ -8,6 +8,8 @@
   
   Alien Bullet sound retrieved from: https://samplefocus.com/samples/retro-gun-laser
   All other sounds retrived from the following: https://classicgaming.cc/classics/space-invaders/sounds#google_vignette
+  
+  Explosion Gif retrived from: https://giphy.com/stickers/Kempa-arcade-blast-kempa-82guPJs4O7Kty6uRry
 
 */
 
