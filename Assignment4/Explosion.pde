@@ -25,7 +25,6 @@ class Explosion {
     explosionFrame = (explosionFrame + 1) % explosionGif.length;
   }
   
-  println(explosionFrame);
   
   //constrain(explosionFrame, 0, 12);
   
@@ -44,7 +43,6 @@ class Explosion {
     
   
   
-  println("this is the explosion frame " + explosionFrame);
   
   }
   

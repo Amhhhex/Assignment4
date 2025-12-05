@@ -1,11 +1,14 @@
 
 import gifAnimation.*;
+import processing.sound.*;
 
 PImage orangeAlien;
 PImage pinkAlien;
 PImage greenAlien;
 PImage yellowAlien;
 PImage playerSpaceship;
+
+PImage youWinScreen;
 
 Spaceship player;
 
@@ -32,6 +35,11 @@ boolean moveLeft;
 boolean gameOver;
 boolean gameWon;
 
+SoundFile playerShot;
+SoundFile playerExplosion;
+SoundFile alienExplode;
+SoundFile alienLaser;
+
 
 int seed = int(random(0, 120));
 
@@ -48,6 +56,15 @@ void setup() {
   greenAlien = loadImage("GreenSpaceInvader.png");
   yellowAlien = loadImage("YellowSpaceInvader.png");
   playerSpaceship = loadImage("PlayerSpaceship.png");
+  
+  youWinScreen = loadImage("YouWinScreen.png");
+  
+  
+  
+  playerShot = new SoundFile(this, "shoot.wav");
+  playerExplosion = new SoundFile(this, "explosion.wav");
+  alienExplode = new SoundFile(this, "invaderkilled.wav");
+  alienLaser = new SoundFile(this, "alien-laser.wav");
 
   playerSpaceship.resize(40, 40);
   orangeAlien.resize(40, 40);
@@ -89,9 +106,16 @@ void draw() {
     fill(255);
     background(0);
 
-    for (int j = 0; j < starList.size(); j++) {
+    for (int j = starList.size() - 1; j >= 0; j--) {
 
 
+      if(starList.get(j).position.y > height) {
+      
+        println("removing");
+         starList.remove(j);
+         continue;
+      
+      }
 
       starList.get(j).update();
       starList.get(j).display();
@@ -129,9 +153,17 @@ void draw() {
 
     player.display();
 
-    println(player.bullets.size());
 
     for (int l = player.bullets.size() - 1; l >= 0; l--) {
+      
+      if(player.bullets.get(l).position.y <= 0) {
+        
+        println("removing player bullets");
+        player.bullets.remove(l);
+        continue;
+      
+      
+      }
       player.bullets.get(l).update();
       player.bullets.get(l).display();
 
@@ -141,6 +173,7 @@ void draw() {
 
           explosionList.add(new Explosion(alienList.get(n).position.x, alienList.get(n).position.y));
 
+          alienExplode.play();
           alienList.remove(n);
           player.bullets.remove(l);
           break;
@@ -151,7 +184,6 @@ void draw() {
 
     for (int a = 0; a < explosionList.size(); a++) {
 
-      println("This is the a value " + a);
       explosionList.get(a).display();
     }
 
@@ -192,6 +224,15 @@ void draw() {
         alienCheck.shoot();
 
         for (int m = 0; m < alienCheck.alienBullets.size(); m++) {
+          
+          if(alienCheck.alienBullets.get(m).position.y >= height) {
+            
+            println("Removing alien bullets");
+            alienCheck.alienBullets.remove(m);
+            continue;
+          
+          }
+          
           alienCheck.alienBullets.get(m).update();
           alienCheck.alienBullets.get(m).display();
         }
@@ -204,10 +245,22 @@ void draw() {
         alienCheck.shoot();
 
         for (int m = 0; m < alienCheck.alienBullets.size(); m++) {
+          
+          if(alienCheck.alienBullets.get(m).position.y >= height) {
+            
+            println("removing alien bullets");
+            
+            alienCheck.alienBullets.remove(m);
+            continue;
+          
+          }
+          
           alienCheck.alienBullets.get(m).update();
           alienCheck.alienBullets.get(m).display();
 
           if (alienCheck.alienBullets.get(m).position.x > player.position.x && alienCheck.alienBullets.get(m).position.x < player.position.x + 40 && alienCheck.alienBullets.get(m).position.y > player.position.y && alienCheck.alienBullets.get(m).position.y < player.position.y + 40) {
+            
+            playerExplosion.play();
             gameOver = true;
           }
         }
@@ -215,13 +268,10 @@ void draw() {
     }
   } else {
     if (gameWon) {
+      
+      image(youWinScreen, 0, 0);
 
-      background(0);
-      fill(255);
-      textSize(50);
-      text("You Won!!!", 180, height/2);
-      textSize(25);
-      text("Press Space to continue", 180, 500);
+      
     } else {
       background(255);
       fill(0);
@@ -279,6 +329,8 @@ void mousePressed() {
   Bullet tempBullet = new Bullet(new PVector(player.position.x + 20, player.position.y), new PVector(0, 3), 1.025);
 
   player.bullets.add(tempBullet);
+  
+  playerShot.play();
 }
 
 void spawnAliens() {
@@ -286,7 +338,7 @@ void spawnAliens() {
   for (int i = 0; i < 550; i += 70) {
 
 
-    Alien tempOrangeAlien = new Alien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), alienAcceleration, int(random(60, 180)));
+    Alien tempOrangeAlien = new Alien(orangeAlien, new PVector(30 + i, 0), new PVector(1, 0), alienAcceleration, int(random(60, 180))); 
 
 
     alienList.add(tempOrangeAlien);

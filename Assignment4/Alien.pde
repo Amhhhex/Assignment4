@@ -49,6 +49,7 @@ class Alien {
 
       Bullet tempAlienBullet = new Bullet(new PVector(position.x + 20, position.y + 40), new PVector(0, -3), 1.025);
 
+      alienLaser.play();
       alienBullets.add(tempAlienBullet);
     }
   }
